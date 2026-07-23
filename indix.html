@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-LAB | Creative Studio & Objects</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- DESIGN SYSTEM VARIABLES --- */
+        :root {
+            --bg-color: #FAFAFA;
+            --text-color: #0a0a0a;
+            --accent-color: #FF4D35;
+            --gray-light: #e5e5e5;
+            --gray-medium: #888888;
+            
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Syne', sans-serif;
+            
+            --radius-lg: 24px;
+            --radius-sm: 8px;
+            
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 32px;
+            --spacing-lg: 64px;
+            --spacing-xl: 120px;
+            
+            --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-fast: 0.3s ease;
+        }
+
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { width: 100%; height: auto; display: block; object-fit: cover; }
+        
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.1; }
+        
+        .display-text {
+            font-size: clamp(3rem, 8vw, 9rem);
+            letter-spacing: -0.02em;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 4rem);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .subtitle {
+            font-family: var(--font-main);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray-medium);
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: var(--text-color);
+            color: white;
+            font-family: var(--font-main);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            transition: var(--transition-fast);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: var(--accent-color);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--text-color);
+            color: white;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+            color: white;
+        }
+
+        .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; }
+        
+        .nav-links { display: flex; gap: var(--spacing-md); }
+        .nav-links a { 
+            font-size: 0.875rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: var(--transition-fast);
+        }
+        
+        .nav-links a:hover::after { width: 100%; }
+
+        .menu-toggle { cursor: pointer; font-size: 1.5rem; }
+
+        /* --- MOBILE MENU OVERLAY --- */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--text-color);
+            color: white;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-100%);
+            transition: var(--transition-slow);
+        }
+
+        .mobile-menu.active { transform: translateY(0); }
+        
+        .mobile-menu a {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin: 10px 0;
+            opacity: 0.5;
+            transition: var(--transition-fast);
+        }
+        
+        .mobile-menu a:hover { opacity: 1; color: var(--accent-color); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-text h1 span { color: var(--accent-color); }
+        
+        .hero-image-wrapper {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            height: 70vh;
+        }
+
+        .hero-image-wrapper img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: var(--transition-slow);
+        }
+
+        .hero-image-wrapper:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        .red-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50%;
+            height: 50%;
+            background: var(--accent-color);
+            z-index: -1;
+            border-radius: var(--radius-lg) 0 0 0;
+        }
+
+        /* --- FEATURED PROJECTS (ALTERNATING) --- */
+        .featured-projects { padding: var(--spacing-xl) 0; }
+        
+        .project-card {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            align-items: center;
+        }
+
+        .project-card.reverse { direction: rtl; }
+        .project-card.reverse .project-info { direction: ltr; }
+
+        .project-img {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3;
+        }
+
+        .project-img img { transition: var(--transition-slow); }
+        .project-card:hover .project-img img { transform: scale(1.05); }
+
+        .project-info h3 { font-size: 2.5rem; margin-bottom: var(--spacing-sm); }
+        .project-meta { display: flex; gap: 20px; margin-bottom: var(--spacing-md); color: var(--gray-medium); font-size: 0.9rem; }
+        
+        .arrow-link {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--text-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+        }
+
+        .arrow-link:hover { background: var(--accent-color); border-color: var(--accent-color); color: white; transform: rotate(-45deg); }
+
+        /* --- COLLECTIONS --- */
+        .collections { padding: var(--spacing-lg) 0; }
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .collection-card {
+            background: white;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 300px;
+            border: 1px solid var(--gray-light);
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .collection-card:hover { transform: translateY(-10px); border-color: var(--accent-color); }
+        .collection-num { font-family: var(--font-display); font-size: 4rem; color: var(--gray-light); }
+        .collection-title { font-size: 1.5rem; font-weight: 600; }
+
+        /* --- PHILOSOPHY --- */
+        .philosophy {
+            padding: var(--spacing-xl) 0;
+            background: var(--text-color);
+            color: white;
+            border-radius: var(--radius-lg);
+            margin: 0 var(--spacing-md);
+            text-align: center;
+        }
+
+        .philosophy h2 { font-size: clamp(2rem, 6vw, 5rem); margin-bottom: var(--spacing-md); }
+        .philosophy p { max-width: 600px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6; color: #ccc; }
+
+        /* --- SHOP SECTION --- */
+        .shop-section { padding: var(--spacing-xl) 0; }
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .product-card {
+            group: product;
+            cursor: pointer;
+        }
+
+        .product-img-wrap {
+            background: #f0f0f0;
+            border-radius: var(--radius-lg);
+            aspect-ratio: 1;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .product-img-wrap img { transition: var(--transition-slow); }
+        .product-card:hover .product-img-wrap img { transform: scale(1.1); }
+
+        .add-to-cart-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            opacity: 0;
+            transition: var(--transition-fast);
+        }
+
+        .product-card:hover .add-to-cart-btn { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .product-info { display: flex; justify-content: space-between; font-weight: 500; }
+        .product-price { color: var(--gray-medium); }
+
+        /* --- JOURNAL --- */
+        .journal-section { padding: var(--spacing-xl) 0; }
+        .journal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); }
+        
+        .article-card img { border-radius: var(--radius-lg); margin-bottom: var(--spacing-sm); height: 250px; }
+        .article-meta { font-size: 0.8rem; color: var(--accent-color); text-transform: uppercase; margin-bottom: 5px; }
+        .article-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 10px; }
+        .read-more { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid transparent; transition: var(--transition-fast); }
+        .article-card:hover .read-more { border-color: var(--accent-color); color: var(--accent-color); }
+
+        /* --- CONTACT / CTA --- */
+        .cta-section {
+            padding: var(--spacing-xl) 0;
+            text-align: center;
+        }
+        
+        .contact-form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+            text-align: left;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 8px; color: var(--gray-medium); }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-main);
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-color); }
+
+        .map-placeholder {
+            background: #eee;
+            border-radius: var(--radius-lg);
+            height: 100%;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-pin {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-color);
+            font-size: 2rem;
+        }
+
+        /* --- INSANE FOOTER --- */
+        footer {
+            background: var(--text-color);
+            color: white;
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            margin-top: var(--spacing-xl);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .footer-brand h2 { font-size: 8rem; line-height: 1; margin-bottom: 20px; }
+        
+        .footer-col h4 { color: var(--accent-color); margin-bottom: 20px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #888; transition: var(--transition-fast); }
+        .footer-col ul li a:hover { color: white; padding-left: 5px; }
+
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* THE INSANE ANIMATION FOR "MADE BY RAYAN" */
+        .rayan-credit {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            animation: glitch-skew 4s infinite linear alternate-reverse;
+        }
+
+        .rayan-credit::before,
+        .rayan-credit::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--text-color);
+        }
+
+        .rayan-credit::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--accent-color);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .rayan-credit::after {
+            left: -2px;
+            text-shadow: -1px 0 #00ffff;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(12px, 9999px, 32px, 0); transform: skew(0.5deg); }
+            5% { clip: rect(85px, 9999px, 14px, 0); transform: skew(0.5deg); }
+            10% { clip: rect(10px, 9999px, 85px, 0); transform: skew(0.1deg); }
+            15% { clip: rect(25px, 9999px, 10px, 0); transform: skew(0.9deg); }
+            20% { clip: rect(65px, 9999px, 45px, 0); transform: skew(0.2deg); }
+            25% { clip: rect(15px, 9999px, 95px, 0); transform: skew(0.8deg); }
+            30% { clip: rect(55px, 9999px, 25px, 0); transform: skew(0.4deg); }
+            35% { clip: rect(5px, 9999px, 65px, 0); transform: skew(0.7deg); }
+            40% { clip: rect(95px, 9999px, 15px, 0); transform: skew(0.3deg); }
+            45% { clip: rect(35px, 9999px, 75px, 0); transform: skew(0.6deg); }
+            50% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.1deg); }
+            55% { clip: rect(15px, 9999px, 55px, 0); transform: skew(0.9deg); }
+            60% { clip: rect(85px, 9999px, 25px, 0); transform: skew(0.5deg); }
+            65% { clip: rect(25px, 9999px, 85px, 0); transform: skew(0.2deg); }
+            70% { clip: rect(65px, 9999px, 15px, 0); transform: skew(0.8deg); }
+            75% { clip: rect(5px, 9999px, 95px, 0); transform: skew(0.4deg); }
+            80% { clip: rect(45px, 9999px, 35px, 0); transform: skew(0.7deg); }
+            85% { clip: rect(95px, 9999px, 55px, 0); transform: skew(0.3deg); }
+            90% { clip: rect(35px, 9999px, 5px, 0); transform: skew(0.6deg); }
+            95% { clip: rect(75px, 9999px, 45px, 0); transform: skew(0.1deg); }
+            100% { clip: rect(15px, 9999px, 75px, 0); transform: skew(0.9deg); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 10px, 0); transform: skew(0.8deg); }
+            10% { clip: rect(15px, 9999px, 85px, 0); transform: skew(0.2deg); }
+            20% { clip: rect(85px, 9999px, 25px, 0); transform: skew(0.6deg); }
+            30% { clip: rect(5px, 9999px, 65px, 0); transform: skew(0.4deg); }
+            40% { clip: rect(45px, 9999px, 95px, 0); transform: skew(0.9deg); }
+            50% { clip: rect(25px, 9999px, 15px, 0); transform: skew(0.1deg); }
+            60% { clip: rect(95px, 9999px, 55px, 0); transform: skew(0.7deg); }
+            70% { clip: rect(35px, 9999px, 75px, 0); transform: skew(0.3deg); }
+            80% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.5deg); }
+            90% { clip: rect(15px, 9999px, 45px, 0); transform: skew(0.2deg); }
+            100% { clip: rect(55px, 9999px, 35px, 0); transform: skew(0.8deg); }
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(1deg); }
+            20% { transform: skew(-1deg); }
+            40% { transform: skew(0.5deg); }
+            60% { transform: skew(-0.5deg); }
+            80% { transform: skew(2deg); }
+            100% { transform: skew(-2deg); }
+        }
+
+        /* --- SCROLL ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-image-wrapper { height: 50vh; order: -1; }
+            .project-card { grid-template-columns: 1fr; }
+            .project-card.reverse { direction: ltr; }
+            .journal-grid { grid-template-columns: 1fr 1fr; }
+            .contact-form-container { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .menu-toggle { display: block; }
+            .journal-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-brand h2 { font-size: 5rem; }
+            .display-text { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">+1 LAB.</div>
+        <div class="nav-links">
+            <a href="#projects">Projects</a>
+            <a href="#shop">Shop</a>
+            <a href="#journal">Journal</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#projects" onclick="toggleMenu()">Projects</a>
+        <a href="#shop" onclick="toggleMenu()">Shop</a>
+        <a href="#journal" onclick="toggleMenu()">Journal</a>
+        <a href="#about" onclick="toggleMenu()">About</a>
+        <a href="#contact" onclick="toggleMenu()">Contact</a>
+        <div style="margin-top: 40px; font-size: 1rem; color: #666;">
+            <i class="fa-brands fa-instagram" style="margin: 0 10px;"></i>
+            <i class="fa-brands fa-behance" style="margin: 0 10px;"></i>
+        </div>
+    </div>
+
+    <!-- 1. HOME / HERO -->
+    <header class="hero container">
+        <div class="hero-content">
+            <div class="hero-text reveal">
+                <p class="subtitle">XL LAB SERIES</p>
+                <h1 class="display-text">MATERIALS<br><span>OF CREATION</span></h1>
+                <p style="margin: 30px 0; color: var(--gray-medium); max-width: 400px;">
+                    We craft objects that blend function, minimalism, and purpose. Based in Milan, designing for the future.
+                </p>
+                <button class="btn">Explore Projects <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <div class="hero-image-wrapper reveal">
+                <img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?q=80&w=1000&auto=format&fit=crop" alt="Fashion Model">
+                <div class="red-overlay"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Featured Projects -->
+    <section id="projects" class="featured-projects container">
+        <div class="section-title reveal">
+            <h2>Selected Works.</h2>
+            <span class="subtitle">2023 — 2024</span>
+        </div>
+
+        <!-- Project 1 -->
+        <div class="project-card reveal">
+            <div class="project-img">
+                <img src="https://images.unsplash.com/photo-1617137968427-85924c809a10?q=80&w=1000&auto=format&fit=crop" alt="Black Glove Project">
+            </div>
+            <div class="project-info">
+                <div class="project-meta">
+                    <span>OBJECTS</span>
+                    <span>2024</span>
+                </div>
+                <h3>BLACK GLOVE</h3>
+                <p style="color: var(--gray-medium); margin-bottom: 30px;">A study in texture and form. Industrial grade materials reimagined for daily wear.</p>
+                <a href="#" class="arrow-link"><i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <!-- Project 2 (Reverse) -->
+        <div class="project-card reverse reveal">
+            <div class="project-img">
+                <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop" alt="Utility Jacket">
+            </div>
+            <div class="project-info">
+                <div class="project-meta">
+                    <span>FASHION</span>
+                    <span>2024</span>
+                </div>
+                <h3>UTILITY JACKET</h3>
+                <p style="color: var(--gray-medium); margin-bottom: 30px;">Functional aesthetics. Waterproof nylon meets urban silhouette.</p>
+                <a href="#" class="arrow-link"><i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collections -->
+    <section class="collections container">
+        <div class="collection-grid">
+            <div class="collection-card reveal">
+                <span class="collection-num">01</span>
+                <div>
+                    <h3 class="collection-title">Fashion</h3>
+                    <p class="subtitle">Seasonal Drops</p>
+                </div>
+            </div>
+            <div class="collection-card reveal">
+                <span class="collection-num">02</span>
+                <div>
+                    <h3 class="collection-title">Industrial</h3>
+                    <p class="subtitle">Hardware & Tools</p>
+                </div>
+            </div>
+            <div class="collection-card reveal">
+                <span class="collection-num">03</span>
+                <div>
+                    <h3 class="collection-title">Objects</h3>
+                    <p class="subtitle">Home & Living</p>
+                </div>
+            </div>
+            <div class="collection-card reveal">
+                <span class="collection-num">04</span>
+                <div>
+                    <h3 class="collection-title">Concepts</h3>
+                    <p class="subtitle">Experimental</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section class="philosophy reveal">
+        <div class="container">
+            <h2>WE DESIGN OBJECTS<br>THAT LAST.</h2>
+            <p>In a world of fast consumption, we choose permanence. Every stitch, every weld, every pixel is calculated to endure time and trend.</p>
+        </div>
+    </section>
+
+    <!-- 3. SHOP SECTION -->
+    <section id="shop" class="shop-section container">
+        <div class="section-title reveal">
+            <h2>Objects.</h2>
+            <span class="subtitle">Designed to Last</span>
+        </div>
+
+        <div class="shop-grid">
+            <!-- Product 1 -->
+            <div class="product-card reveal">
+                <div class="product-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop" alt="Red Sneaker">
+                    <button class="add-to-cart-btn">ADD TO CART</button>
+                </div>
+                <div class="product-info">
+                    <span>SYNTH MODULE</span>
+                    <span class="product-price">$120</span>
+                </div>
+            </div>
+            <!-- Product 2 -->
+            <div class="product-card reveal">
+                <div class="product-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=600&auto=format&fit=crop" alt="Bag">
+                    <button class="add-to-cart-btn">ADD TO CART</button>
+                </div>
+                <div class="product-info">
+                    <span>TOTE BAG 001</span>
+                    <span class="product-price">$45</span>
+                </div>
+            </div>
+            <!-- Product 3 -->
+            <div class="product-card reveal">
+                <div class="product-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1591369822096-114045767947?q=80&w=600&auto=format&fit=crop" alt="Cap">
+                    <button class="add-to-cart-btn">ADD TO CART</button>
+                </div>
+                <div class="product-info">
+                    <span>CAP 001</span>
+                    <span class="product-price">$35</span>
+                </div>
+            </div>
+             <!-- Product 4 -->
+             <div class="product-card reveal">
+                <div class="product-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1620799140408-ed5341cd2431?q=80&w=600&auto=format&fit=crop" alt="Shirt">
+                    <button class="add-to-cart-btn">ADD TO CART</button>
+                </div>
+                <div class="product-info">
+                    <span>VOID FRAME TEE</span>
+                    <span class="product-price">$55</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. JOURNAL -->
+    <section id="journal" class="journal-section container">
+        <div class="section-title reveal">
+            <h2>Journal.</h2>
+            <span class="subtitle">Ideas & Process</span>
+        </div>
+
+        <div class="journal-grid">
+            <article class="article-card reveal">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop" alt="Office">
+                <div class="article-meta">May 12, 2024 • Process</div>
+                <h3 class="article-title">The Future of Functional Wear</h3>
+                <a href="#" class="read-more">Read More →</a>
+            </article>
+            <article class="article-card reveal">
+                <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600&auto=format&fit=crop" alt="Neon">
+                <div class="article-meta">Apr 28, 2024 • Design</div>
+                <h3 class="article-title">Behind the Design: Black Glove</h3>
+                <a href="#" class="read-more">Read More →</a>
+            </article>
+            <article class="article-card reveal">
+                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=600&auto=format&fit=crop" alt="Wall">
+                <div class="article-meta">Apr 15, 2024 • Inspiration</div>
+                <h3 class="article-title">Materials We Love to Work With</h3>
+                <a href="#" class="read-more">Read More →</a>
+            </article>
+        </div>
+    </section>
+
+    <!-- 6. CONTACT / CTA -->
+    <section id="contact" class="cta-section container">
+        <div class="reveal">
+            <h2 class="display-text">Let's Build<br>Something Better.</h2>
+        </div>
+
+        <div class="contact-form-container reveal">
+            <form>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="4" placeholder="Tell us about your project..."></textarea>
+                </div>
+                <button type="submit" class="btn">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+                
+                <div style="margin-top: 40px;">
+                    <p class="subtitle" style="margin-bottom: 10px;">Direct Contact</p>
+                    <p>hello@xlab.studio</p>
+                    <p>Via Tortona 32, Milano, Italy</p>
+                </div>
+            </form>
+
+            <div class="map-placeholder">
+                <!-- Abstract Map Representation -->
+                <div style="width: 100%; height: 100%; background-image: radial-gradient(#ccc 1px, transparent 1px); background-size: 20px 20px; opacity: 0.5;"></div>
+                <i class="fa-solid fa-location-dot map-pin"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. FOOTER WITH INSANE ANIMATION -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h2>LAB.</h2>
+                    <p style="color: #666; max-width: 300px;">A creative studio focused on designing objects and experiences that blend function and minimalism.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Studio</h4>
+                    <ul>
+                        <li><a href="#">Projects</a></li>
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">Journal</a></li>
+                        <li><a href="#">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Socials</h4>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Behance</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Twitter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Shipping</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p style="color: #444; font-size: 0.8rem;">© 2024 X-LAB STUDIO. ALL RIGHTS RESERVED.</p>
+                
+                <!-- THE REQUESTED ANIMATED TEXT -->
+                <div class="rayan-credit" data-text="MADE BY RAYAN">
+                    MADE BY RAYAN
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Scroll Reveal Animation using Intersection Observer
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealOnScroll = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Optional: Stop observing once revealed
+                        // observer.unobserve(entry.target); 
+                    }
+                });
+            }, {
+                threshold: 0.15, // Trigger when 15% of element is visible
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+        });
+
+        // Smooth Scroll for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
